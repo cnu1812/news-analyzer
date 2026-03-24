@@ -1,0 +1,46 @@
+name: Morning Pulse — Daily Podcast
+
+on:
+  # Runs at 00:30 UTC = 6:00 AM IST every day
+  schedule:
+    - cron: "30 0 * * *"
+
+  # Also allows manual trigger from GitHub Actions UI (great for testing!)
+  workflow_dispatch:
+
+jobs:
+  generate-podcast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 🎥 Install system dependencies (ffmpeg for pydub)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: 📦 Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: 🎙️ Run Morning Pulse pipeline
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: python src/main.py
+
+      - name: 📁 Upload audio artifact (for debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: morning-pulse-audio
+          path: output/*.mp3
+          retention-days: 3
+          if-no-files-found: ignore
