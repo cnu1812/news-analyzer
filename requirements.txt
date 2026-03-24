@@ -3,5 +3,5 @@ requests==2.32.3
 groq==0.13.1
 gTTS==2.5.4
 pydub==0.25.1
-audioop-lts==0.2.1
-edge-tts==6.1.12
+audioop-lts==0.2.1; python_version >= "3.13"
+edge-tts==7.2.8
