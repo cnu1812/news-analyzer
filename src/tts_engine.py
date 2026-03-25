@@ -8,6 +8,9 @@ import sys
 import asyncio
 import edge_tts
 import requests
+import time
+import random
+from gtts import gTTS
 from pathlib import Path
 
 # Explicitly ensure Pydub finds FFmpeg in the venv on Windows (for local dry-runs)
@@ -25,15 +28,56 @@ ASSETS_DIR = Path("src/assets")
 
 
 async def _generate_speech_async(text: str, voice_id: str, output_file: str) -> None:
-    """Generate audio for a single chunk of text using edge-tts asynchronously."""
+    """Generate audio for a single chunk of text using edge-tts asynchronously with retries."""
+    max_retries = 3
+    base_delay = 2
+    
+    for attempt in range(max_retries):
+        try:
+            communicate = edge_tts.Communicate(text, voice_id)
+            await communicate.save(output_file)
+            return
+        except Exception as e:
+            # Handle 503 (Service Unavailable) or handshake errors which are often transient
+            error_msg = str(e)
+            if "503" in error_msg or "Handshake" in error_msg or "Invalid response status" in error_msg:
+                wait_time = base_delay * (2 ** attempt) + random.uniform(0, 1)
+                print(f"      [TTS] Service busy (503), retrying in {wait_time:.1f}s... (Attempt {attempt + 1}/{max_retries})")
+                await asyncio.sleep(wait_time)
+            else:
+                raise e
+    
+    # Final attempt without catching to let the exception bubble up if it still fails
     communicate = edge_tts.Communicate(text, voice_id)
     await communicate.save(output_file)
 
 
+def _generate_speech_gtts(text: str, output_file: str) -> None:
+    """Fallback: Generate audio using Google TTS (gTTS) if Edge-TTS fails."""
+    try:
+        # Use Indian English accent for consistency
+        tts = gTTS(text=text, lang='en', tld='co.in')
+        tts.save(output_file)
+    except Exception as e:
+        print(f"      [TTS] CRITICAL: Fallback gTTS also failed: {e}")
+        raise e
+
+
 def _generate_speech(text: str, voice_id: str) -> bytes:
-    """Synchronous wrapper to generate audio with edge-tts and return bytes."""
+    """Synchronous wrapper to generate audio with edge-tts and return bytes, with gTTS fallback."""
     temp_file = str(OUTPUT_DIR / f"temp_{abs(hash(text))}.mp3")
-    asyncio.run(_generate_speech_async(text, voice_id, temp_file))
+    
+    try:
+        # Primary: Microsoft Edge Neural TTS
+        asyncio.run(_generate_speech_async(text, voice_id, temp_file))
+    except Exception as e:
+        print(f"      [TTS] Warning: Edge-TTS failed after retries ({e}). Switching to gTTS fallback...")
+        try:
+            # Secondary: Google TTS (gTTS)
+            _generate_speech_gtts(text, temp_file)
+        except Exception as fallback_err:
+            # Last Resort: If even gTTS fails, we have to bubble up the error or return silent audio
+            raise fallback_err
     
     with open(temp_file, "rb") as f:
         audio_bytes = f.read()
@@ -109,6 +153,10 @@ def text_to_speech(script: str, date_str: str) -> str:
     for i, (text, voice_id) in enumerate(segments):
         print(f"      -> Synthesizing segment {i+1}/{len(segments)} (Voice: {'Sreenivas' if voice_id == HOST_A_VOICE_ID else 'Deepika'})...")
         audio_bytes = _generate_speech(text, voice_id)
+        
+        # Pacing: small delay between segments to avoid aggressive rate limiting
+        if i < len(segments) - 1:
+            time.sleep(0.5)
         
         # Save temp file for pydub to read
         temp_file = OUTPUT_DIR / f"temp_chunk_{i}.mp3"
