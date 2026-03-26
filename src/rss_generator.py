@@ -19,7 +19,7 @@ PODCAST_EMAIL = "cnu1812@gmail.com"
 PODCAST_IMAGE = f"{BASE_URL}/assets/logo.png"
 PODCAST_CATEGORY = "News"
 
-def update_feed(mp3_path: str, title: str, description: str):
+def update_feed(mp3_path: str, title: str, description: str, image_url: str = None):
     """Adds a new episode and regenerates the RSS feed."""
     data_dir = Path("data")
     episodes_file = data_dir / "episodes.json"
@@ -46,7 +46,8 @@ def update_feed(mp3_path: str, title: str, description: str):
         "url": f"{BASE_URL}/podcasts/{file_name}",
         "length": file_size,
         "duration": duration_sec,
-        "type": "audio/mpeg"
+        "type": "audio/mpeg",
+        "image": image_url if image_url else PODCAST_IMAGE
     }
     
     # 4. Save history (newest first)
@@ -94,6 +95,7 @@ def generate_xml(episodes):
       <pubDate>{ep['pub_date']}</pubDate>
       <guid isPermaLink="false">{ep['guid']}</guid>
       <enclosure url="{ep['url']}" length="{ep['length']}" type="{ep['type']}"/>
+      <itunes:image href="{ep.get('image', PODCAST_IMAGE)}"/>
       <itunes:duration>{duration_fmt}</itunes:duration>
       <itunes:explicit>no</itunes:explicit>
     </item>"""

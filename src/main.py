@@ -23,13 +23,15 @@ from scrapers.indian_sports_business import fetch_indian_sports_news, fetch_indi
 from scrapers.world_news import fetch_world_news
 from scrapers.cnbc import fetch_cnbc_news
 from scrapers.tech_news import fetch_tech_news
-from script_generator import generate_podcast_script
+from script_generator import generate_podcast_script, generate_image_prompt
 from tts_engine import text_to_speech
 from discord_sender import send_to_discord, send_error_notification
 from researcher import ResearchAgent
 from fact_checker import FactChecker
 from rss_generator import update_feed
 import shutil
+import random
+from urllib.parse import quote
 
 
 def get_date_strings() -> tuple[str, str]:
@@ -127,9 +129,18 @@ def run_pipeline() -> None:
             permanent_path = os.path.join(podcasts_dir, permanent_file_name)
             shutil.copy(audio_path, permanent_path)
             
+            # Generate Dynamic Episode Artwork (Pro Upgrade)
+            print("   - Generating dynamic episode artwork prompt...")
+            image_prompt = generate_image_prompt(all_news)
+            # Use Pollinations.ai for zero-cost automated image generation
+            seed = random.randint(0, 1000000)
+            encoded_prompt = quote(image_prompt)
+            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&seed={seed}"
+            
             description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
-            update_feed(permanent_path, f"Morning Pulse - {display_date}", description)
+            update_feed(permanent_path, f"Morning Pulse - {display_date}", description, image_url=image_url)
             print(f"   - RSS updated! MP3 saved to: {permanent_path}")
+            print(f"   - Artwork generated: {image_url}")
         except Exception as e:
             print(f"   - [WARNING] RSS update failed: {e}")
 
