@@ -13,7 +13,7 @@ from pydub import AudioSegment
 # Configuration (Change via .env)
 BASE_URL = os.getenv("PODCAST_BASE_URL", "https://cnu1812.github.io/news-analyzer")
 PODCAST_TITLE = "Morning Pulse"
-PODCAST_DESC = "Your daily, AI-generated, high-energy news digest. Cross-referenced and research-backed."
+PODCAST_DESC = "Wake up to the smartest 10 minutes of your day. Your daily AI-powered news briefing, delivering high-value insights from the NYT, global markets, CNBC, and tech breakthroughs. Fact-checked and research-backed by advanced AI for deep context."
 PODCAST_AUTHOR = "Morning Pulse AI"
 PODCAST_IMAGE = f"{BASE_URL}/assets/logo.png"
 PODCAST_CATEGORY = "News"
