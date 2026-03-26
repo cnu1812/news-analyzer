@@ -6,6 +6,10 @@ import os
 import sys
 import traceback
 from datetime import datetime, timezone, timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 # Add src to path when running from project root
 sys.path.insert(0, os.path.dirname(__file__))
@@ -19,6 +23,8 @@ from scrapers.tech_news import fetch_tech_news
 from script_generator import generate_podcast_script
 from tts_engine import text_to_speech
 from discord_sender import send_to_discord, send_error_notification
+from researcher import ResearchAgent
+from fact_checker import FactChecker
 
 
 def get_date_strings() -> tuple[str, str]:
@@ -74,9 +80,20 @@ def run_pipeline() -> None:
         "tech_news": tech_news,
     }
 
+    # -- Step 1.5: Fact-Checking & Deep Research -------------------
+    print("\nStep 1.5 -- Fact-checking and Deep-dive research...")
+    
+    # 1. Fact Check (Verify consistency and remove non-genuine news)
+    checker = FactChecker()
+    all_news = checker.verify_news(all_news)
+    
+    # 2. Deep Dive Research (Perform background search for context)
+    researcher = ResearchAgent()
+    research_data = researcher.research_all(all_news)
+
     # -- Step 2: Generate AI podcast script -----------------------
     print(f"\nStep 2/4 -- Generating podcast script with Groq Llama-3.3-70B...")
-    script = generate_podcast_script(all_news, display_date)
+    script = generate_podcast_script(all_news, display_date, research_data)
     word_count = len(script.split())
     duration_est = round(word_count / 130)
     print(f"   - Script ready: {word_count} words (~{duration_est} min)")

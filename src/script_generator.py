@@ -34,13 +34,14 @@ def _format_articles(articles: list[dict], max_per_source: int = 3) -> str:
     return "\n".join(lines)
 
 
-def generate_podcast_script(all_news: dict, date_str: str) -> str:
+def generate_podcast_script(all_news: dict, date_str: str, research_data: dict = None) -> str:
     """
     Call Groq API to generate the full podcast script.
     
     all_news keys:
         nyt, indian_market, indian_sports, indian_business,
         world_news, cnbc, tech_news
+    research_data: {headline: research_context} for deep-dives
     """
     client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
@@ -68,6 +69,11 @@ def generate_podcast_script(all_news: dict, date_str: str) -> str:
 {_format_articles(all_news.get('tech_news', []))}
 """
 
+    if research_data:
+        news_context += "\n=== DEEP-DIVE RESEARCH CONTEXT ===\n"
+        for headline, context in research_data.items():
+            news_context += f"TOPIC: {headline}\nDEEP-DIVE BACKGROUND:\n{context}\n\n"
+
     system_prompt = """You are the writing team for "Morning Pulse", the most high-energy, engaging, and dynamic news podcast on the internet.
 The podcast is hosted by two people:
 - HOST_A (Sreenivas): A deep-voiced, professional, but highly enthusiastic anchor.
@@ -78,6 +84,7 @@ RULES:
 - MULTI-HOST BANTER: Write the script as a dynamic conversation. Every line MUST be prefixed with either [HOST_A] or [HOST_B].
 - STRICT NEWS FILTERING: You MUST act as a ruthless editor. Discard celebrity gossip, vague PR pieces, or low-impact news. ONLY discuss macro-economic shifts, major tech breakthroughs, geopolitical events, and hard market-moving news.
 - LONG-FORM SHOW: We need a MASSIVE 15-to-20 MINUTE EPISODE. The script MUST be AT LEAST 2,500 words. Dive DEEP into the news items. Do not just read headlines; have Adam and Sarah debate the implications of the most critical news.
+- INCORPORATE RESEARCH: When you see [DEEP-DIVE RESEARCH CONTEXT] for a topic, use that extra background information to provide a more sophisticated analysis. Don't just mention the facts; talk about the "Why" and the "What comes next".
 - NO BORING LISTS: Seamlessly weave the NYT, Markets, Tech, and World news together as a conversation.
 - WRITE ONLY SPOKEN TEXT: NO stage directions, NO headers, NO extra text. Just pure dialogue.
 - END WITH A BANG: Host A and Host B should sign off leaving the listener motivated for the day!"""

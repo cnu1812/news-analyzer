@@ -7,6 +7,10 @@ import sys
 import traceback
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -18,6 +22,8 @@ from scrapers.world_news import fetch_world_news
 from scrapers.cnbc import fetch_cnbc_news
 from scrapers.tech_news import fetch_tech_news
 from tts_engine import text_to_speech
+from researcher import ResearchAgent
+from fact_checker import FactChecker
 
 def get_date_strings() -> tuple[str, str]:
     ist = timezone(timedelta(hours=5, minutes=30))
@@ -52,15 +58,31 @@ def run_dry_run() -> None:
         print(f"  [ERROR] Scraper failed: {e}")
         return
 
+    # 1.5 Fact-Check & Research
+    print("\nStep 1.5: Fact-Checking & Deep Research...")
+    all_news = {
+        "nyt": nyt,
+        "indian_market": mkt,
+        "world_news": world,
+    }
+    
+    # Mock/Run Fact-Checker
+    checker = FactChecker()
+    filtered_news = checker.verify_news(all_news)
+    
+    # Mock/Run Researcher
+    researcher = ResearchAgent()
+    research_data = researcher.research_all(filtered_news, max_stories=1)
+    
     # 2. Mock Script Generation
     print("\nStep 2: Mocking Script Generation (Groq)...")
-    mock_script = f"""[HOST_A] Welcome to the Morning Pulse dry run for {display_date}! 
-[HOST_B] Thanks Sreenivas! We are testing the pipeline today to make sure everything sounds perfect.
-[HOST_A] Exactly. We've just confirmed our scrapers are pulling news from the NYT, Indian markets, and tech world.
-[HOST_B] And now we're testing the neural voices. This is Deepika from India, and you're Sreenivas from India as well!
-[HOST_A] That's right. Next step is mixing this dialogue with some smooth lo-fi beats.
-[HOST_B] Let's see if the audio engine can handle it! Signing off for the dry run."""
-    print("  - Mock script created.")
+    from script_generator import generate_podcast_script
+    try:
+        mock_script = generate_podcast_script(filtered_news, display_date, research_data)
+        print("  - Script generated with research context and fact-checking.")
+    except Exception as e:
+        print(f"  [ERROR] Script generation failed: {e}")
+        return
 
     # 3. Test TTS & Mixing (Verify Edge-TTS + Pydub + FFmpeg)
     print("\nStep 3: Testing TTS & Audio Mixing...")
