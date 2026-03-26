@@ -15,6 +15,7 @@ BASE_URL = os.getenv("PODCAST_BASE_URL", "https://cnu1812.github.io/news-analyze
 PODCAST_TITLE = "Morning Pulse"
 PODCAST_DESC = "Wake up to the smartest 10 minutes of your day. Your daily AI-powered news briefing, delivering high-value insights from the NYT, global markets, CNBC, and tech breakthroughs. Fact-checked and research-backed by advanced AI for deep context."
 PODCAST_AUTHOR = "Morning Pulse AI"
+PODCAST_EMAIL = "cnu1812@gmail.com"
 PODCAST_IMAGE = f"{BASE_URL}/assets/logo.png"
 PODCAST_CATEGORY = "News"
 
@@ -72,6 +73,7 @@ def generate_xml(episodes):
     <itunes:type>episodic</itunes:type>
     <itunes:owner>
       <itunes:name>{PODCAST_AUTHOR}</itunes:name>
+      <itunes:email>{PODCAST_EMAIL}</itunes:email>
     </itunes:owner>
     <itunes:image href="{PODCAST_IMAGE}"/>
     <itunes:category text="{PODCAST_CATEGORY}"/>
