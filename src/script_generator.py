@@ -1,10 +1,6 @@
-"""
-AI Podcast Script Generator using Groq API (free tier, Llama-3.3-70B).
-Transforms raw news data into an engaging, natural podcast script (~15 min).
-"""
 import os
-from groq import Groq
 from datetime import datetime
+from llm_utils import call_llm
 
 # Target word count for ~20 min podcast (safely hits 10+ min at 64k bitrate)
 TARGET_WORDS = 3000
@@ -43,8 +39,6 @@ def generate_podcast_script(all_news: dict, date_str: str, research_data: dict =
         world_news, cnbc, tech_news
     research_data: {headline: research_context} for deep-dives
     """
-    client = Groq(api_key=os.environ["GROQ_API_KEY"])
-
     # Build the context for the AI
     news_context = f"""
 === NEW YORK TIMES — FRONT PAGE ===
@@ -102,17 +96,7 @@ Start with a massive hook, like:
 
 DO NOT output any intro/outro text outside of the dialogue itself. Every single line MUST start with [HOST_A] or [HOST_B]."""
 
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        temperature=0.7,
-        max_tokens=6000,
-    )
-
-    script = response.choices[0].message.content.strip()
+    script = call_llm(system_prompt, user_prompt, response_format="text")
     print(f"[ScriptGen] Generated {len(script.split())} words")
     return script
 

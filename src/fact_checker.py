@@ -1,26 +1,20 @@
-"""
-Automated Fact-Checker for Morning Pulse.
-Uses Groq (Llama-3.3-70B) to cross-reference news sources and filter for consistency.
-"""
 import os
 import json
-from groq import Groq
+from llm_utils import call_llm
 
 class FactChecker:
     def __init__(self):
-        self.api_key = os.getenv("GROQ_API_KEY")
-        if self.api_key:
-            self.client = Groq(api_key=self.api_key)
-        else:
-            self.client = None
-            print("[FactChecker] Warning: GROQ_API_KEY not found. Fact-checking will be skipped.")
+        # We check for keys primarily in call_llm, but we can do a quick check here for reporting
+        self.has_keys = os.getenv("GROQ_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        if not self.has_keys:
+            print("[FactChecker] Warning: No LLM API keys found. Fact-checking will be skipped.")
 
     def verify_news(self, all_news: dict) -> dict:
         """
         Runs a "Fact Consistency" pass on the collected news.
         Removes stories that are flagged as high-risk, conflicting, or non-genuine.
         """
-        if not self.client:
+        if not self.has_keys:
             return all_news
 
         print("[FactChecker] Performing automated cross-reference analysis...")
@@ -56,19 +50,16 @@ OUTPUT: Return a JSON array of the "Approved" story TITLES only."""
         user_prompt += json.dumps(summaries, indent=2)
 
         try:
-            response = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                temperature=0.3,
-                max_tokens=2000,
-                response_format={"type": "json_object"}
-            )
+            response_text = call_llm(system_prompt, user_prompt, response_format="json")
             
-            # The model might return {"approved_titles": [...]} or just [...] 
-            data = json.loads(response.choices[0].message.content)
+            # The model might return {"approved_titles": [...]} or just [...]
+            # Standardizing JSON extraction for Gemini/Groq
+            start = response_text.find('[') if response_text.strip().startswith('[') else response_text.find('{')
+            end = (response_text.rfind(']') if response_text.strip().startswith('[') else response_text.rfind('}')) + 1
+            if start != -1 and end != 0:
+                response_text = response_text[start:end]
+
+            data = json.loads(response_text)
             approved_titles = data.get("approved_titles", []) if isinstance(data, dict) else data
             
             if not isinstance(approved_titles, list):
