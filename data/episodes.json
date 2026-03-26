@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "guid": "4ba257de-d1a9-4247-b6fe-9fd81d7b8cf5",
+    "title": "Welcome to Morning Pulse (Trailer)",
+    "description": "Meet your new AI news source in this introductory trailer. Daily episodes starting now.",
+    "pub_date": "Thu, 26 Mar 2026 15:40:47 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_trailer.mp3",
+    "length": 81648,
+    "duration": 30,
+    "type": "audio/mpeg"
+  }
+]

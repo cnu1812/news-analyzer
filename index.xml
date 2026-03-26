@@ -17,5 +17,14 @@
     <itunes:category text="News"/>
     <itunes:explicit>no</itunes:explicit>
 
+    <item>
+      <title>Welcome to Morning Pulse (Trailer)</title>
+      <description>Meet your new AI news source in this introductory trailer. Daily episodes starting now.</description>
+      <pubDate>Thu, 26 Mar 2026 15:40:47 +0000</pubDate>
+      <guid isPermaLink="false">4ba257de-d1a9-4247-b6fe-9fd81d7b8cf5</guid>
+      <enclosure url="https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_trailer.mp3" length="81648" type="audio/mpeg"/>
+      <itunes:duration>00:00:30</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
   </channel>
 </rss>
