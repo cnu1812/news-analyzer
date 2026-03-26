@@ -18,6 +18,15 @@
     <itunes:explicit>no</itunes:explicit>
 
     <item>
+      <title>Morning Pulse - March 26, 2026</title>
+      <description>Morning Pulse for March 26, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.</description>
+      <pubDate>Thu, 26 Mar 2026 10:31:41 +0000</pubDate>
+      <guid isPermaLink="false">8a92949a-d22b-4287-a6ed-8be6666dc66b</guid>
+      <enclosure url="https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-03-26.mp3" length="5350757" type="audio/mpeg"/>
+      <itunes:duration>00:11:08</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
       <title>Welcome to Morning Pulse (Trailer)</title>
       <description>Meet your new AI news source in this introductory trailer. Daily episodes starting now.</description>
       <pubDate>Thu, 26 Mar 2026 15:40:47 +0000</pubDate>

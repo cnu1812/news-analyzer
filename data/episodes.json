@@ -1,5 +1,15 @@
 [
   {
+    "guid": "8a92949a-d22b-4287-a6ed-8be6666dc66b",
+    "title": "Morning Pulse - March 26, 2026",
+    "description": "Morning Pulse for March 26, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
+    "pub_date": "Thu, 26 Mar 2026 10:31:41 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-03-26.mp3",
+    "length": 5350757,
+    "duration": 668,
+    "type": "audio/mpeg"
+  },
+  {
     "guid": "4ba257de-d1a9-4247-b6fe-9fd81d7b8cf5",
     "title": "Welcome to Morning Pulse (Trailer)",
     "description": "Meet your new AI news source in this introductory trailer. Daily episodes starting now.",
