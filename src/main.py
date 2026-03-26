@@ -6,10 +6,13 @@ import os
 import sys
 import traceback
 from datetime import datetime, timezone, timedelta
-from dotenv import load_dotenv
 
-# Load environment variables from .env
-load_dotenv()
+# Try loading environment variables from .env if python-dotenv is available (for local dev)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Add src to path when running from project root
 sys.path.insert(0, os.path.dirname(__file__))
