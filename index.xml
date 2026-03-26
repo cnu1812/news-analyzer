@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" 
+    xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" 
+    xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Morning Pulse</title>
+    <description>Your daily, AI-generated, high-energy news digest. Cross-referenced and research-backed.</description>
+    <link>https://cnu1812.github.io/news-analyzer</link>
+    <language>en-us</language>
+    <itunes:author>Morning Pulse AI</itunes:author>
+    <itunes:type>episodic</itunes:type>
+    <itunes:owner>
+      <itunes:name>Morning Pulse AI</itunes:name>
+    </itunes:owner>
+    <itunes:image href="https://cnu1812.github.io/news-analyzer/assets/logo.png"/>
+    <itunes:category text="News"/>
+    <itunes:explicit>no</itunes:explicit>
+
+    <item>
+      <title>Alpha Episode</title>
+      <description>This is the first automated episode!</description>
+      <pubDate>Thu, 26 Mar 2026 15:04:49 +0000</pubDate>
+      <guid isPermaLink="false">9cc2dcce-34ef-4b6b-a40d-5497faa85570</guid>
+      <enclosure url="https://cnu1812.github.io/news-analyzer/podcasts/test_episode.mp3" length="13" type="audio/mpeg"/>
+      <itunes:duration>00:10:00</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+  </channel>
+</rss>

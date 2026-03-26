@@ -28,6 +28,8 @@ from tts_engine import text_to_speech
 from discord_sender import send_to_discord, send_error_notification
 from researcher import ResearchAgent
 from fact_checker import FactChecker
+from rss_generator import update_feed
+import shutil
 
 
 def get_date_strings() -> tuple[str, str]:
@@ -112,6 +114,25 @@ def run_pipeline() -> None:
 
     if success:
         print(f"\nOK! Morning Pulse for {display_date} delivered to Discord!")
+        
+        # Step 5: Update RSS Feed for Spotify/Apple/Amazon (Zero-Cost Hosting)
+        print(f"\nStep 5/4 -- Updating Automated RSS Feed...")
+        try:
+            # Move to permanent storage for RSS host (GitHub Pages)
+            project_root = os.path.dirname(os.path.dirname(__file__))
+            podcasts_dir = os.path.join(project_root, "podcasts")
+            os.makedirs(podcasts_dir, exist_ok=True)
+            
+            permanent_file_name = f"morning_pulse_{file_date}.mp3"
+            permanent_path = os.path.join(podcasts_dir, permanent_file_name)
+            shutil.copy(audio_path, permanent_path)
+            
+            description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
+            update_feed(permanent_path, f"Morning Pulse - {display_date}", description)
+            print(f"   - RSS updated! MP3 saved to: {permanent_path}")
+        except Exception as e:
+            print(f"   - [WARNING] RSS update failed: {e}")
+
     else:
         print(f"\n[FAIL] Discord delivery failed. Audio saved at: {audio_path}")
         sys.exit(1)
