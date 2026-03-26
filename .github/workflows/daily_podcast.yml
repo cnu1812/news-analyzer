@@ -55,11 +55,15 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # Pull latest to avoid conflicts
-          git pull origin main --rebase
-          # Add new files
+          
+          # Add and commit local changes first
           git add data/episodes.json index.xml podcasts/*.mp3
           git commit -m "Upload new podcast episode: ${{ steps.date.outputs.date }}" || echo "No changes to commit"
+          
+          # Pull latest (rebase) to resolve any remote changes
+          git pull origin main --rebase
+          
+          # Push the final state
           git push origin main
 
       - name: Upload audio artifact (for debugging)
