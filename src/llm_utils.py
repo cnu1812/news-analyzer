@@ -75,8 +75,10 @@ def _call_gemini(system_prompt: str, user_prompt: str, response_format: str) -> 
         
     genai.configure(api_key=api_key)
     
-    # Gemini 2.0 Flash is fast and high-quality
-    model = genai.GenerativeModel('gemini-2.0-flash')
+    # Use the latest and most efficient model (gemini-2.0-flash) by default
+    # User can override via GEMINI_MODEL (e.g., gemini-2.0-pro-exp for best results)
+    model_name = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    model = genai.GenerativeModel(model_name)
     
     # Gemini uses a single prompt or chat history. 
     # For simplicity, we combine system and user prompts.
