@@ -132,15 +132,25 @@ def run_pipeline() -> None:
             # Generate Dynamic Episode Artwork (Pro Upgrade)
             print("   - Generating dynamic episode artwork prompt...")
             image_prompt = generate_image_prompt(all_news)
-            # Use Pollinations.ai for zero-cost automated image generation
+            
+            # 1. Try Pollinations AI (Requires API Key in 2026)
+            pollinations_key = os.getenv("POLLINATIONS_API_KEY")
             seed = random.randint(0, 1000000)
             encoded_prompt = quote(image_prompt)
-            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1024&height=1024&nologo=true&seed={seed}"
             
+            if pollinations_key:
+                image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1400&height=1400&nologo=true&seed={seed}&key={pollinations_key}"
+                print(f"   - AI Artwork (Pollinations) generated: {image_url}")
+            else:
+                # 2. Fallback to Unsplash (Zero-Cost, No Key High-Quality Photos)
+                # We use the top keywords for the search
+                keywords = quote(image_prompt.split(",")[1].strip() if "," in image_prompt else "news")
+                image_url = f"https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&h=1400&q=80&keywords={keywords}"
+                print(f"   - [INFO] No Pollinations key. Falling back to Unsplash: {image_url}")
+
             description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
             update_feed(permanent_path, f"Morning Pulse - {display_date}", description, image_url=image_url)
             print(f"   - RSS updated! MP3 saved to: {permanent_path}")
-            print(f"   - Artwork generated: {image_url}")
         except Exception as e:
             print(f"   - [WARNING] RSS update failed: {e}")
 

@@ -44,6 +44,7 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           PODCAST_BASE_URL: ${{ secrets.PODCAST_BASE_URL }}
+          POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY }}
           PREFER_GEMINI: true
         run: python src/main.py
 
