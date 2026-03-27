@@ -9,6 +9,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from pydub import AudioSegment
+from xml.sax.saxutils import escape
 
 # Configuration (Change via .env)
 BASE_URL = os.getenv("PODCAST_BASE_URL", "https://cnu1812.github.io/news-analyzer")
@@ -76,8 +77,8 @@ def generate_xml(episodes):
       <itunes:name>{PODCAST_AUTHOR}</itunes:name>
       <itunes:email>{PODCAST_EMAIL}</itunes:email>
     </itunes:owner>
-    <itunes:image href="{PODCAST_IMAGE}"/>
-    <itunes:category text="{PODCAST_CATEGORY}"/>
+    <itunes:image href="{escape(PODCAST_IMAGE)}"/>
+    <itunes:category text="{escape(PODCAST_CATEGORY)}"/>
     <itunes:explicit>no</itunes:explicit>
 """
 
@@ -90,12 +91,12 @@ def generate_xml(episodes):
 
         rss += f"""
     <item>
-      <title>{ep['title']}</title>
-      <description>{ep['description']}</description>
+      <title>{escape(ep['title'])}</title>
+      <description>{escape(ep['description'])}</description>
       <pubDate>{ep['pub_date']}</pubDate>
       <guid isPermaLink="false">{ep['guid']}</guid>
-      <enclosure url="{ep['url']}" length="{ep['length']}" type="{ep['type']}"/>
-      <itunes:image href="{ep.get('image', PODCAST_IMAGE)}"/>
+      <enclosure url="{escape(ep['url'])}" length="{ep['length']}" type="{ep['type']}"/>
+      <itunes:image href="{escape(ep.get('image', PODCAST_IMAGE))}"/>
       <itunes:duration>{duration_fmt}</itunes:duration>
       <itunes:explicit>no</itunes:explicit>
     </item>"""
