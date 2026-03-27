@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 from llm_utils import call_llm
 
@@ -121,9 +122,18 @@ def generate_image_prompt(all_news: dict) -> str:
     user_prompt = f"HEADLINES:\n{context}\n\nOutput only the 10-word prompt."
     
     prompt = call_llm(system_prompt, user_prompt, response_format="text")
+    # Add random style for daily variety
+    styles = [
+        "Professional cinematic digital art", "Futuristic cyberpunk illustration", 
+        "Hyper-realistic 3D render", "Dramatic neon noir atmosphere", 
+        "Sleek minimalist tech design", "Vibrant abstract data visualization",
+        "Epic wide-angle concept art", "Surrealist modern digital painting"
+    ]
+    chosen_style = random.choice(styles)
+    
     # Clean up and ensure it's not too long
     clean_prompt = "".join(e for e in prompt if e.isalnum() or e.isspace()).strip()
-    return f"Professional cinematic digital art, {clean_prompt}, futuristic, high resolution, 4k"
+    return f"{chosen_style}, {clean_prompt}, high resolution, 4k, trending on artstation"
 
 
 def generate_social_hook(all_news: dict) -> str:
@@ -140,8 +150,14 @@ def generate_social_hook(all_news: dict) -> str:
                 headlines.append(arts[0].get("title", ""))
     
     context = "\n".join(headlines)
-    system_prompt = "You are a viral social media manager for 'Morning Pulse'. Write a high-energy tweet (under 200 chars) that hooks the reader with today's biggest news. Use 2-3 emojis and relevant hashtags like #AI #Tech #Market #MorningPulse."
-    user_prompt = f"HEADLINES:\n{context}\n\nOutput only the tweet text."
+    system_prompt = """You are the world's most enthusiastic and viral social media hype-man for 'Morning Pulse'. 
+Your goal is to write a tweet that makes people FEEL the energy of the news. 
+- Use caps for EMPHASIS.
+- Use 4-5 high-energy emojis (🚀, 🔥, 🤯, 📈, 💎).
+- Make it sound like 'YOU CANNOT MISS THIS'.
+- Keep it under 200 characters to leave room for the link.
+- Use hashtags like #AI #Tech #MorningPulse #BreakingNews."""
+    user_prompt = f"HEADLINES FOR TODAY:\n{context}\n\nCraft the ultimate hype tweet!"
     
     tweet = call_llm(system_prompt, user_prompt, response_format="text")
     # Clean up whitespace
