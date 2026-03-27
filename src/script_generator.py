@@ -126,6 +126,28 @@ def generate_image_prompt(all_news: dict) -> str:
     return f"Professional cinematic digital art, {clean_prompt}, futuristic, high resolution, 4k"
 
 
+def generate_social_hook(all_news: dict) -> str:
+    """Generates a viral-style tweet hook for social media promotion."""
+    # Collect the top headlines
+    headlines = []
+    for cat in ["tech_news", "indian_market", "nyt"]:
+        data = all_news.get(cat, [])
+        if isinstance(data, list) and data:
+            headlines.append(data[0].get("title", ""))
+        elif isinstance(data, dict):
+            arts = data.get("articles", [])
+            if arts:
+                headlines.append(arts[0].get("title", ""))
+    
+    context = "\n".join(headlines)
+    system_prompt = "You are a viral social media manager for 'Morning Pulse'. Write a high-energy tweet (under 200 chars) that hooks the reader with today's biggest news. Use 2-3 emojis and relevant hashtags like #AI #Tech #Market #MorningPulse."
+    user_prompt = f"HEADLINES:\n{context}\n\nOutput only the tweet text."
+    
+    tweet = call_llm(system_prompt, user_prompt, response_format="text")
+    # Clean up whitespace
+    return tweet.strip()
+
+
 if __name__ == "__main__":
     # Quick test with dummy data
     import json

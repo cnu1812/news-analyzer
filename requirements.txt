@@ -7,3 +7,4 @@ audioop-lts==0.2.1; python_version >= "3.13"
 edge-tts==7.2.8
 tavily-python==0.7.23
 google-generativeai==0.8.4
+tweepy==4.14.0

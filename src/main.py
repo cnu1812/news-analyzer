@@ -23,12 +23,13 @@ from scrapers.indian_sports_business import fetch_indian_sports_news, fetch_indi
 from scrapers.world_news import fetch_world_news
 from scrapers.cnbc import fetch_cnbc_news
 from scrapers.tech_news import fetch_tech_news
-from script_generator import generate_podcast_script, generate_image_prompt
+from script_generator import generate_podcast_script, generate_image_prompt, generate_social_hook
 from tts_engine import text_to_speech
 from discord_sender import send_to_discord, send_error_notification
 from researcher import ResearchAgent
 from fact_checker import FactChecker
 from rss_generator import update_feed
+from twitter_sender import post_episode_to_twitter
 import shutil
 import random
 from urllib.parse import quote
@@ -151,6 +152,17 @@ def run_pipeline() -> None:
             description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
             update_feed(permanent_path, f"Morning Pulse - {display_date}", description, image_url=image_url)
             print(f"   - RSS updated! MP3 saved to: {permanent_path}")
+
+            # Step 6: Social Media Blast (X/Twitter)
+            print(f"\nStep 6/4 -- Blasting to Social Media (X)...")
+            try:
+                tweet_text = generate_social_hook(all_news)
+                # Link to Spotify
+                link = "Listen now: https://open.spotify.com/show/57JysTl6fZwvGBFC4KBeux"
+                full_tweet = f"{tweet_text}\n\n{link}"
+                post_episode_to_twitter(full_tweet, image_url=image_url)
+            except Exception as e:
+                print(f"   - [WARNING] Twitter post failed: {e}")
         except Exception as e:
             print(f"   - [WARNING] RSS update failed: {e}")
 
