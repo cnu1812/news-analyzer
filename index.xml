@@ -18,6 +18,15 @@
     <itunes:explicit>no</itunes:explicit>
 
     <item>
+      <title>Morning Pulse - March 27, 2026</title>
+      <description>Morning Pulse for March 27, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.</description>
+      <pubDate>Fri, 27 Mar 2026 03:40:51 +0000</pubDate>
+      <guid isPermaLink="false">47f61faa-8f3d-4008-baed-fdcdb506cb50</guid>
+      <enclosure url="https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-03-27.mp3" length="6291165" type="audio/mpeg"/>
+      <itunes:duration>00:13:06</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+    </item>
+    <item>
       <title>Morning Pulse - March 26, 2026</title>
       <description>Morning Pulse for March 26, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.</description>
       <pubDate>Thu, 26 Mar 2026 10:31:41 +0000</pubDate>
