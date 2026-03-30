@@ -111,64 +111,77 @@ def run_pipeline() -> None:
     audio_path = text_to_speech(script, file_date)
     print(f"   - Audio: {audio_path}")
 
-    # -- Step 4: Send to Discord ------------------------------------
-    print(f"\nStep 4/4 -- Sending to Discord...")
-    success = send_to_discord(audio_path, script, display_date, indian_market)
-
-    if success:
-        print(f"\nOK! Morning Pulse for {display_date} delivered to Discord!")
+    # -- Step 4: Update RSS Feed for Spotify/Apple/Amazon (Zero-Cost Hosting) --
+    print(f"\nStep 4/4 -- Updating Automated RSS Feed (Priority 1: Spotify/Amazon)...")
+    rss_success = False
+    try:
+        # Move to permanent storage for RSS host (GitHub Pages)
+        project_root = os.path.dirname(os.path.dirname(__file__))
+        podcasts_dir = os.path.join(project_root, "podcasts")
+        os.makedirs(podcasts_dir, exist_ok=True)
         
-        # Step 5: Update RSS Feed for Spotify/Apple/Amazon (Zero-Cost Hosting)
-        print(f"\nStep 5/4 -- Updating Automated RSS Feed...")
+        permanent_file_name = f"morning_pulse_{file_date}.mp3"
+        permanent_path = os.path.join(podcasts_dir, permanent_file_name)
+        shutil.copy(audio_path, permanent_path)
+        
+        # Generate Dynamic Episode Artwork (Pro Upgrade)
+        print("   - Generating dynamic episode artwork prompt...")
+        image_prompt = generate_image_prompt(all_news)
+        
+        # 1. Try Pollinations AI (Requires API Key in 2026)
+        pollinations_key = os.getenv("POLLINATIONS_API_KEY")
+        seed = random.randint(0, 1000000)
+        encoded_prompt = quote(image_prompt)
+        
+        if pollinations_key:
+            image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1400&height=1400&nologo=true&seed={seed}&key={pollinations_key}"
+            print(f"   - AI Artwork (Pollinations) generated: {image_url}")
+        else:
+            # 2. Fallback to Unsplash (Zero-Cost, No Key High-Quality Photos)
+            keywords = quote(image_prompt.split(",")[1].strip() if "," in image_prompt else "news")
+            image_url = f"https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&h=1400&q=80&keywords={keywords}"
+            print(f"   - [INFO] No Pollinations key. Falling back to Unsplash: {image_url}")
+
+        description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
+        update_feed(permanent_path, f"Morning Pulse - {display_date}", description, image_url=image_url)
+        print(f"   - RSS updated! MP3 saved to: {permanent_path}")
+        rss_success = True
+    except Exception as e:
+        print(f"   - [WARNING] RSS update failed: {e}")
+
+    # -- Step 5: Send to Discord (Optional) --------------------------
+    print(f"\nStep 5/4 -- Sending to Discord (Priority 2: Optional)...")
+    discord_success = False
+    try:
+        discord_success = send_to_discord(audio_path, script, display_date, indian_market)
+        if discord_success:
+            print(f"   - [OK] Morning Pulse delivered to Discord!")
+        else:
+            print(f"   - [FAIL] Discord delivery failed (likely file size limit).")
+    except Exception as e:
+        print(f"   - [WARNING] Discord delivery error: {e}")
+
+    # -- Step 6: Social Media Blast (X/Twitter) ---------------------
+    if rss_success:
+        print(f"\nStep 6/4 -- Blasting to Social Media (X) (Priority 3: Optional)...")
         try:
-            # Move to permanent storage for RSS host (GitHub Pages)
-            project_root = os.path.dirname(os.path.dirname(__file__))
-            podcasts_dir = os.path.join(project_root, "podcasts")
-            os.makedirs(podcasts_dir, exist_ok=True)
-            
-            permanent_file_name = f"morning_pulse_{file_date}.mp3"
-            permanent_path = os.path.join(podcasts_dir, permanent_file_name)
-            shutil.copy(audio_path, permanent_path)
-            
-            # Generate Dynamic Episode Artwork (Pro Upgrade)
-            print("   - Generating dynamic episode artwork prompt...")
-            image_prompt = generate_image_prompt(all_news)
-            
-            # 1. Try Pollinations AI (Requires API Key in 2026)
-            pollinations_key = os.getenv("POLLINATIONS_API_KEY")
-            seed = random.randint(0, 1000000)
-            encoded_prompt = quote(image_prompt)
-            
-            if pollinations_key:
-                image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1400&height=1400&nologo=true&seed={seed}&key={pollinations_key}"
-                print(f"   - AI Artwork (Pollinations) generated: {image_url}")
-            else:
-                # 2. Fallback to Unsplash (Zero-Cost, No Key High-Quality Photos)
-                # We use the top keywords for the search
-                keywords = quote(image_prompt.split(",")[1].strip() if "," in image_prompt else "news")
-                image_url = f"https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&h=1400&q=80&keywords={keywords}"
-                print(f"   - [INFO] No Pollinations key. Falling back to Unsplash: {image_url}")
-
-            description = f"Morning Pulse for {display_date}. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed."
-            update_feed(permanent_path, f"Morning Pulse - {display_date}", description, image_url=image_url)
-            print(f"   - RSS updated! MP3 saved to: {permanent_path}")
-
-            # Step 6: Social Media Blast (X/Twitter)
-            print(f"\nStep 6/4 -- Blasting to Social Media (X)...")
-            try:
-                tweet_text = generate_social_hook(all_news)
-                # Link to Spotify
-                link = "Listen now: https://open.spotify.com/show/57JysTl6fZwvGBFC4KBeux"
-                full_tweet = f"{tweet_text}\n\n{link}"
-                post_episode_to_twitter(full_tweet, image_url=image_url)
-            except Exception as e:
-                print(f"   - [WARNING] Twitter post failed: {e}")
+            tweet_text = generate_social_hook(all_news)
+            # Link to Spotify
+            link = "Listen now: https://open.spotify.com/show/57JysTl6fZwvGBFC4KBeux"
+            full_tweet = f"{tweet_text}\n\n{link}"
+            post_episode_to_twitter(full_tweet, image_url=image_url)
         except Exception as e:
-            print(f"   - [WARNING] RSS update failed: {e}")
-
+            print(f"   - [WARNING] Twitter post failed: {e}")
     else:
-        print(f"\n[FAIL] Discord delivery failed. Audio saved at: {audio_path}")
+        print("\n[SKIP] Skipping Twitter blast as RSS update failed (no link available).")
+
+    # Overall pipeline status
+    if rss_success:
+        print(f"\n[SUCCESS] Pipeline completed. RSS Feed is live.")
+    else:
+        print(f"\n[CRITICAL] Pipeline failed to update RSS feed. Audio saved at: {audio_path}")
         sys.exit(1)
+
 
 
 if __name__ == "__main__":
