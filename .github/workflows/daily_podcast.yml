@@ -62,7 +62,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Add and commit local changes first
-          git add data/episodes.json index.xml podcasts/*.mp3
+          git add data/ index.xml podcasts/
           git commit -m "Upload new podcast episode: ${{ steps.date.outputs.date }}" || echo "No changes to commit"
           
           # Pull latest (rebase) to resolve any remote changes

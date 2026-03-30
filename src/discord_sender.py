@@ -102,7 +102,12 @@ def send_to_discord(
         print(f"[Discord] (OK) Podcast sent successfully!")
         return True
     else:
-        print(f"[Discord] (Failed) Failed: {response.status_code} — {response.text[:300]}")
+        status = response.status_code
+        text = response.text[:300]
+        if status == 413:
+            print(f"[Discord] (Failed) Error 413: Request Entity Too Large. The audio file is likely above the 25MB limit for this Discord server/webhook.")
+        else:
+            print(f"[Discord] (Failed) Failed: {status} — {text}")
         return False
 
 
