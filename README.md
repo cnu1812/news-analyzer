@@ -47,6 +47,17 @@ A **~15-minute MP3** sent to Discord every morning covering:
 3. Click ⚙️ Edit Channel → Integrations → Webhooks → New Webhook
 4. Copy the Webhook URL
 
+**Twitter (X) API** (for automated posting):
+1. Go to [developer.x.com](https://developer.x.com) and sign up for a **Free Developer Account**.
+2. Create a new **Project** and **App**.
+3. In **App Settings** -> **User authentication settings**:
+   - Set App permissions to **Read and Write**.
+   - Type of App: **Web App, Android, iOS**.
+   - Callback URL / Website URL: Use your GitHub repo URL (required field, but not used for this bot).
+4. Go to **Keys and Tokens**:
+   - **API Key and Secret** -> Regenerate to get `TWITTER_API_KEY` and `TWITTER_API_SECRET`.
+   - **Access Token and Secret** -> Generate to get `TWITTER_ACCESS_TOKEN` and `TWITTER_ACCESS_SECRET`.
+
 ### 3. Add GitHub Secrets
 
 In your GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**:
@@ -56,6 +67,10 @@ In your GitHub repo → **Settings → Secrets and variables → Actions → New
 | `GROQ_API_KEY` | Your Groq key (`gsk_...`) |
 | `ELEVENLABS_API_KEY` | Your ElevenLabs key |
 | `DISCORD_WEBHOOK_URL` | Your Discord webhook URL |
+| `TWITTER_API_KEY` | Your X (Twitter) API Key |
+| `TWITTER_API_SECRET` | Your X (Twitter) API Secret |
+| `TWITTER_ACCESS_TOKEN` | Your X (Twitter) Access Token |
+| `TWITTER_ACCESS_SECRET` | Your X (Twitter) Access Token Secret |
 
 ### 4. Enable GitHub Actions
 
