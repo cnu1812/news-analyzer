@@ -1,5 +1,16 @@
 [
   {
+    "guid": "a1e0cf67-0c2a-43ae-b9cb-7716c46a7d2a",
+    "title": "Morning Pulse - May 01, 2026",
+    "description": "Morning Pulse for May 01, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
+    "pub_date": "Fri, 01 May 2026 04:39:21 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-05-01.mp3",
+    "length": 7391443,
+    "duration": 923,
+    "type": "audio/mpeg",
+    "image": "https://image.pollinations.ai/prompt/Futuristic%20cyberpunk%20illustration%2C%20Abandoned%20surveillance%20drone%20overlooks%20a%20neglected%20weapons%20factory%20landscape%2C%20high%20resolution%2C%204k%2C%20trending%20on%20artstation?width=1400&height=1400&nologo=true&seed=12216&key=sk_X9Y2mZS39a1zUbReBwr1N3DatiFirKUJ"
+  },
+  {
     "guid": "3e7b7893-5f38-4b2e-aab5-8f152c642f48",
     "title": "Morning Pulse - April 30, 2026",
     "description": "Morning Pulse for April 30, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
