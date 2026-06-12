@@ -1,5 +1,16 @@
 [
   {
+    "guid": "caff2bb6-75b3-4bac-aa56-2b53eb339e03",
+    "title": "Morning Pulse - June 12, 2026",
+    "description": "Morning Pulse for June 12, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
+    "pub_date": "Fri, 12 Jun 2026 05:15:14 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-06-12.mp3",
+    "length": 5643955,
+    "duration": 705,
+    "type": "audio/mpeg",
+    "image": "https://image.pollinations.ai/prompt/Futuristic%20cyberpunk%20illustration%2C%20Futuristic%20cityscape%20with%20SpaceX%20and%20Prometheus%20robots%20dominating%20skyline%2C%20high%20resolution%2C%204k%2C%20trending%20on%20artstation?width=1400&height=1400&nologo=true&seed=557502&key=sk_X9Y2mZS39a1zUbReBwr1N3DatiFirKUJ"
+  },
+  {
     "guid": "877773ec-98a8-4f1b-89c7-329936cf5fc9",
     "title": "Morning Pulse - June 11, 2026",
     "description": "Morning Pulse for June 11, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
