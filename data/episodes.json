@@ -1,5 +1,16 @@
 [
   {
+    "guid": "012f280d-41e0-4232-a8a2-31e8daccf209",
+    "title": "Morning Pulse - June 21, 2026",
+    "description": "Morning Pulse for June 21, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
+    "pub_date": "Sun, 21 Jun 2026 05:27:29 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-06-21.mp3",
+    "length": 10370656,
+    "duration": 1296,
+    "type": "audio/mpeg",
+    "image": "https://image.pollinations.ai/prompt/Sleek%20minimalist%20tech%20design%2C%20Dramatic%20cityscape%20with%20towering%20skyscrapers%20and%20ominous%20dark%20clouds%2C%20high%20resolution%2C%204k%2C%20trending%20on%20artstation?width=1400&height=1400&nologo=true&seed=704214&key=sk_X9Y2mZS39a1zUbReBwr1N3DatiFirKUJ"
+  },
+  {
     "guid": "330cd30d-c03f-4cf5-a331-0a258336cf3f",
     "title": "Morning Pulse - June 20, 2026",
     "description": "Morning Pulse for June 20, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
