@@ -1,5 +1,16 @@
 [
   {
+    "guid": "e4b04d96-6ac4-4adf-83d7-0cc36e7a9462",
+    "title": "Morning Pulse - August 01, 2026",
+    "description": "Morning Pulse for August 01, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
+    "pub_date": "Sat, 01 Aug 2026 04:02:12 +0000",
+    "url": "https://cnu1812.github.io/news-analyzer/podcasts/morning_pulse_2026-08-01.mp3",
+    "length": 5534868,
+    "duration": 691,
+    "type": "audio/mpeg",
+    "image": "https://image.pollinations.ai/prompt/Futuristic%20cyberpunk%20illustration%2C%20Chaos%20erupts%20as%20robots%20overrun%20daycare%20amidst%20government%20deregulation%2C%20high%20resolution%2C%204k%2C%20trending%20on%20artstation?width=1400&height=1400&nologo=true&seed=552260&key=sk_X9Y2mZS39a1zUbReBwr1N3DatiFirKUJ"
+  },
+  {
     "guid": "3f7e4baf-4483-420a-8a1e-0ae6f5c85cd1",
     "title": "Morning Pulse - July 31, 2026",
     "description": "Morning Pulse for July 31, 2026. Top stories from NYT, Markets, Tech, and more - fact-checked and research-backed.",
