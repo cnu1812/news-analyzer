@@ -119,7 +119,7 @@ morning-pulse/
 │   │   ├── world_news.py
 │   │   ├── cnbc.py
 │   │   └── tech_news.py
-│   ├── script_generator.py  ← Groq AI (Llama-3.3-70B)
+│   ├── script_generator.py  ← Groq / Gemini with automatic model fallback
 │   ├── tts_engine.py        ← Microsoft Edge Neural TTS
 │   ├── discord_sender.py    ← Webhook delivery
 │   └── main.py              ← Orchestrator
@@ -149,3 +149,55 @@ morning-pulse/
 - **Change schedule**: Edit the cron in `.github/workflows/daily_podcast.yml`  
   (`"30 0 * * *"` = 6:00 AM IST | `"0 2 * * *"` = 7:30 AM IST)
 - **Add/remove news sources**: Edit any file in `src/scrapers/`
+
+
+## Automatic model recovery
+
+All script, fact-checking, artwork-prompt and social-hook requests share
+`src/llm_utils.py`. Gemini now defaults to `gemini-flash-latest` (Google's rolling
+Flash alias), and Groq defaults to `openai/gpt-oss-120b`.
+
+For each request, the app queries the provider's model catalog, then tries:
+
+1. An optional `GEMINI_MODEL` / `GROQ_MODEL` override.
+2. Optional comma-separated `GEMINI_FALLBACK_MODELS` / `GROQ_FALLBACK_MODELS`.
+3. Built-in alternatives, followed by compatible models from the live catalog.
+4. The other provider, if its API key is configured.
+
+Discovery prefers newer Gemini Flash versions and orders Groq discoveries by
+creation time. It excludes specialized models and restricts automatic discovery
+to recognized general-purpose text model families. Gemini discovery requires
+`generateContent` support and excludes previews; the rolling latest alias itself
+may point to a preview, according to Google's release policy. Explicit overrides
+can select other models. A future model with a different naming/API contract may
+still need a code update; no fallback can guarantee access, quota, or compatibility.
+
+404/410 and Groq retirement errors suppress that model for one hour in the current
+process. Every scheduled run starts fresh and discovers available replacements;
+no source-code edits or commits are needed for ordinary model retirements. If the
+catalog is unavailable, configured models and built-in defaults are still tried.
+401/403 errors move to the other provider rather than misclassifying an API key
+problem as retirement. Rate limits and server failures try the next candidate.
+Each provider has a maximum of eight generation attempts with connection/read
+timeouts of 10/90 seconds. Logs identify the selected model without printing keys,
+prompts, or raw provider error bodies. Empty, truncated and invalid JSON responses
+are rejected instead of being published as successful generations.
+
+In GitHub Actions, set the optional model overrides under **Settings → Secrets and
+variables → Actions → Variables**. Existing API key secrets and `PREFER_GEMINI`
+continue to work. Models can have different costs and quotas; selection does not
+change billing settings or guarantee free-tier availability.
+
+The integration uses the providers' documented REST APIs through the existing
+`requests` dependency, replacing the old Groq and Gemini SDK pins.
+
+Run offline regression tests (no API keys or publishing):
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Model/API references: [Gemini models](https://ai.google.dev/gemini-api/docs/models),
+[Gemini model discovery](https://ai.google.dev/api/models),
+[Groq models](https://console.groq.com/docs/models),
+[Groq API](https://console.groq.com/docs/api-reference).
